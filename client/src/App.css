@@ -1,0 +1,24 @@
+:root {
+  --primary-blue: #0052cc;
+  --hover-blue: #0045ad;
+  --bg-gray: #f4f5f7;
+  --text-dark: #172b4d;
+  --text-muted: #5e6c84;
+  --border-color: #edeff2;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--bg-gray);
+  color: var(--text-dark);
+}
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
