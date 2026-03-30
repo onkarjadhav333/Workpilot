@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 // ─── Reusable send function ───────────────────────────────
 const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
-    from: `"Task Manager" <${process.env.GMAIL_USER}>`,
+    from: `"Workpilot" <${process.env.GMAIL_USER}>`,
     to,
     subject,
     html
