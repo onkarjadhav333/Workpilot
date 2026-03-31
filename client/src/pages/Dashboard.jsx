@@ -75,7 +75,7 @@ const Dashboard = () => {
 
       {/* ── Navbar ── */}
       <nav className="navbar">
-        <h2>Task<span>Manager</span></h2>
+        <h2>Work<span>Pilot</span></h2>
         <div className="user-controls">
           <span>Welcome, <strong>{user?.name}</strong></span>
           <button onClick={logout} className="logout-btn">Log Out</button>
