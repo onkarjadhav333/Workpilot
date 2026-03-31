@@ -28,6 +28,7 @@ function App() {
           <Route path="/register"                element={<Register />} />
           <Route path="/forgot-password"         element={<ForgotPassword />} />
           <Route path="/reset-password/:token"   element={<ResetPassword />} />
+          <Route path="/data-deletion" element={<DataDeletion />} />
 
           {/* Protected routes */}
           <Route path="/dashboard" element={
