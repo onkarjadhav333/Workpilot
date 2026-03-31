@@ -9,6 +9,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import NotFound from './pages/NotFound';
+import DataDeletion from './pages/DataDeletion'
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
