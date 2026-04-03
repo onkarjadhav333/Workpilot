@@ -17,11 +17,21 @@ const autoAddMember = async (projectId, assigneeId, ownerId) => {
 const notifyAssignee = async (assigneeId, taskTitle, projectName, priority) => {
   try {
     const assignee = await User.findById(assigneeId).select('name email');
-    if (!assignee) return;
+    if (!assignee) {
+      console.log('notifyAssignee: assignee not found in DB');
+      return;
+    }
+
+    console.log(`notifyAssignee: sending email to ${assignee.email}`);
     const { subject, html } = taskAssignedEmail(assignee.name, taskTitle, projectName, priority);
     await sendEmail({ to: assignee.email, subject, html });
+    console.log(`notifyAssignee: email sent successfully to ${assignee.email} ✅`);
+
   } catch (err) {
+    // ✅ Full error logged — won't break task creation
     console.error("Task notification email failed:", err.message);
+    console.error("Error code:", err.code);
+    console.error("Full error:", err);
   }
 };
 
@@ -52,7 +62,6 @@ exports.createTask = async (req, res) => {
     if (assignee) await notifyAssignee(assignee, title, projectExists.name, priority);
 
     // Populate assignee name before returning
-    // so frontend shows name immediately without needing to refresh
     const populatedTask = await Task.findById(task._id)
       .populate('assignee', 'name');
 

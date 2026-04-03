@@ -1,12 +1,14 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 
-// ─── Create transporter (Gmail) ───────────────────────────
+// ✅ Force Node.js to prefer IPv4 for ALL DNS lookups globally
+dns.setDefaultResultOrder('ipv4first');
+
+// ─── Create transporter ───────────────────────────────────
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true,
-  //Force IPv4 — Render doesn't support IPv6 outbound
-  family: 4,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS
@@ -33,7 +35,6 @@ const sendEmail = async ({ to, subject, html }) => {
     subject,
     html
   };
-
   await transporter.sendMail(mailOptions);
 };
 
