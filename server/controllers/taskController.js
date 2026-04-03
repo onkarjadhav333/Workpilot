@@ -51,7 +51,12 @@ exports.createTask = async (req, res) => {
     await autoAddMember(project, assignee, projectExists.owner);
     if (assignee) await notifyAssignee(assignee, title, projectExists.name, priority);
 
-    res.status(201).json(task);
+    // Populate assignee name before returning
+    // so frontend shows name immediately without needing to refresh
+    const populatedTask = await Task.findById(task._id)
+      .populate('assignee', 'name');
+
+    res.status(201).json(populatedTask);
   } catch (err) {
     console.error("createTask:", err.message);
     res.status(500).json({ msg: "Could not create task" });
@@ -59,12 +64,10 @@ exports.createTask = async (req, res) => {
 };
 
 // ─── Update Task ───────────────────────────────────────────
-// Used for BOTH full edit (admin) and drag & drop status change (any auth user)
 exports.updateTask = async (req, res) => {
   try {
     const { title, description, status, priority, assignee, dueDate } = req.body;
 
-    // Only pick fields that were actually sent — ignore undefined
     const allowedUpdates = {};
     if (title !== undefined)       allowedUpdates.title = title;
     if (description !== undefined) allowedUpdates.description = description;
@@ -73,7 +76,6 @@ exports.updateTask = async (req, res) => {
     if (assignee !== undefined)    allowedUpdates.assignee = assignee;
     if (dueDate !== undefined)     allowedUpdates.dueDate = dueDate;
 
-    //returnDocument: 'after' replaces deprecated { new: true }
     const task = await Task.findByIdAndUpdate(
       req.params.id,
       allowedUpdates,
@@ -82,7 +84,6 @@ exports.updateTask = async (req, res) => {
 
     if (!task) return res.status(404).json({ msg: "Task not found" });
 
-    // Only notify if assignee was actually changed AND user is admin
     if (assignee && req.user.role === 'admin') {
       const projectData = await Project.findById(task.project);
       if (projectData) {
