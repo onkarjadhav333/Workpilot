@@ -11,6 +11,9 @@ const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
+// Tells Express to trust the X-Forwarded-For header from Render's proxy
+app.set('trust proxy', 1);
+
 // ─── 1. Connect to MongoDB ────────────────────────────────
 connectDB();
 
