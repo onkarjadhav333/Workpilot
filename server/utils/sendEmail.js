@@ -1,31 +1,31 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 
-// ─── Brevo SMTP Relay ─────────────────────────────────────
-// Uses Brevo's own SMTP server (not Gmail)
-// Brevo's SMTP relay works on Render ✅
+// Force IPv4 for DNS lookups
+dns.setDefaultResultOrder('ipv4first');
+
+// ─── Create transporter (Gmail) ───────────────────────────
 const transporter = nodemailer.createTransport({
-  host: 'smtp-relay.brevo.com',   // ← Brevo's SMTP server
-  port: 587,
-  secure: false,
+  service: 'gmail',
   auth: {
-    user: process.env.BREVO_SMTP_LOGIN,  // a73ba1001@smtp-brevo.com
-    pass: process.env.BREVO_SMTP_KEY     // the SMTP key you generate
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS  // App Password
   }
 });
 
 // ─── Verify on startup ────────────────────────────────────
 transporter.verify((error) => {
   if (error) {
-    console.error('❌ Brevo SMTP failed:', error.message);
+    console.error('❌ Gmail connection failed:', error.message);
   } else {
-    console.log('✅ Brevo SMTP ready to send emails');
+    console.log('✅ Gmail ready to send emails');
   }
 });
 
 // ─── Reusable send function ───────────────────────────────
 const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
-    from: `"Workpilot" <${process.env.BREVO_SENDER_EMAIL}>`,
+    from: `"Workpilot" <${process.env.GMAIL_USER}>`,
     to,
     subject,
     html
