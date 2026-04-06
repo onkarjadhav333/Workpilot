@@ -1,17 +1,17 @@
-const Brevo = require('@getbrevo/brevo');
+const { TransactionalEmailsApi, SendSmtpEmail, ApiClient } = require('@getbrevo/brevo');
 
 // ─── Initialize Brevo client ──────────────────────────────
-const apiInstance = new Brevo.TransactionalEmailsApi();
+const apiInstance = new TransactionalEmailsApi();
 apiInstance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
 
 // ─── Reusable send function ───────────────────────────────
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    const sendSmtpEmail = new Brevo.SendSmtpEmail();
+    const sendSmtpEmail = new SendSmtpEmail();
 
     sendSmtpEmail.sender = {
       name: 'Workpilot',
-      email: process.env.BREVO_SENDER_EMAIL // ← your email (any email you verify on Brevo)
+      email: process.env.BREVO_SENDER_EMAIL
     };
     sendSmtpEmail.to = [{ email: to }];
     sendSmtpEmail.subject = subject;
