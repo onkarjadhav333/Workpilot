@@ -1,21 +1,29 @@
-const { Resend } = require('resend');
+const Brevo = require('@getbrevo/brevo');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ─── Initialize Brevo client ──────────────────────────────
+const apiInstance = new Brevo.TransactionalEmailsApi();
+apiInstance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
 
+// ─── Reusable send function ───────────────────────────────
 const sendEmail = async ({ to, subject, html }) => {
-  const { error } = await resend.emails.send({
-    from: 'Workpilot <onboarding@resend.dev>', // ← use this until you verify a domain
-    to,
-    subject,
-    html
-  });
+  try {
+    const sendSmtpEmail = new Brevo.SendSmtpEmail();
 
-  if (error) {
-    console.error('❌ Email failed:', error);
-    throw new Error(error.message);
+    sendSmtpEmail.sender = {
+      name: 'Workpilot',
+      email: process.env.BREVO_SENDER_EMAIL // ← your email (any email you verify on Brevo)
+    };
+    sendSmtpEmail.to = [{ email: to }];
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.htmlContent = html;
+
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`✅ Email sent to ${to}`);
+
+  } catch (err) {
+    console.error('❌ Email failed:', err.message);
+    throw err;
   }
-
-  console.log(`✅ Email sent to ${to}`);
 };
 
 module.exports = sendEmail;
