@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'; 
 import toast from 'react-hot-toast';
 import API from '../api/axios';
+import { AuthContext } from '../context/AuthContext';
 import '../styles/ProjectDetails.css';
 
 const StrictModeDroppable = ({ children, ...props }) => {
@@ -26,7 +27,7 @@ const ProjectDetails = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const { user: currentUser } = useContext(AuthContext);
   const isAdmin = currentUser?.role === 'admin';
 
   const [showTaskModal, setShowTaskModal] = useState(false);
